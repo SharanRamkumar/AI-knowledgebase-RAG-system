@@ -1,4 +1,11 @@
 # AI Knowledge Base RAG System using n8n, Supabase and OpenAI
+![n8n](https://img.shields.io/badge/n8n-workflow-EA4B71?logo=n8n&logoColor=white)
+![OpenAI](https://img.shields.io/badge/OpenAI-GPT--4o--mini-412991?logo=openai&logoColor=white)
+![Supabase](https://img.shields.io/badge/Supabase-Vector%20Store-3ECF8E?logo=supabase&logoColor=white)
+![pgvector](https://img.shields.io/badge/pgvector-Embeddings-4169E1?logo=postgresql&logoColor=white)
+![License](https://img.shields.io/badge/license-MIT-green)
+![RAG](https://img.shields.io/badge/RAG-Retrieval%20Augmented%20Generation-blue)
+![Status](https://img.shields.io/badge/status-production--ready-brightgreen)
 
 ## Overview
 
