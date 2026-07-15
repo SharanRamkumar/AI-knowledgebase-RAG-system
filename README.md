@@ -5,7 +5,6 @@
 ![pgvector](https://img.shields.io/badge/pgvector-Embeddings-4169E1?logo=postgresql&logoColor=white)
 ![License](https://img.shields.io/badge/license-MIT-green)
 ![RAG](https://img.shields.io/badge/RAG-Retrieval%20Augmented%20Generation-blue)
-![Status](https://img.shields.io/badge/status-production--ready-brightgreen)
 
 ## Overview
 
