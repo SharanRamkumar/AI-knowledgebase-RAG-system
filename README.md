@@ -128,10 +128,6 @@ n8n-RAG-System
 │     ├── workflow.png
 │     ├── architecture.png
 │     └── demo.png
-│
-├── README.md
-├── LICENSE
-└── .gitignore
 ```
 
 ---
