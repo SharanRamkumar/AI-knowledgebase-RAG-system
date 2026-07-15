@@ -1,0 +1,127 @@
+{
+  "nodes": [
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json.chatInput }}",
+        "options": {
+          "systemMessage": "You are the official AI assistant for this business.\n\nRules:\n\n1. Before answering any non-greeting question, you MUST call the knowledge_base tool.\n\nDo not decide whether the tool is needed.\n\nAlways call it first.\n\nAfter reading the returned documents, answer ONLY from those documents.\n\nIf no relevant documents are returned, say:\n\n\"I don't have that information. Please contact us directly for more details.\"\n2. Never answer from your own knowledge.\n3. If the tool returns no relevant information, respond:\n\"I don't have that information. Please contact us directly for more details.\"\n4. Never invent prices, services, timings or policies.\n5. Keep answers concise.\n6. If multiple chunks are returned, combine them into one coherent answer.\n7. If the user greets you, greet them normally without searching."
+        }
+      },
+      "id": "e29d4e0c-43cd-4e31-8e97-04c61fbc6ee5",
+      "name": "AI Agent",
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 1.6,
+      "position": [272, 0]
+    },
+    {
+      "parameters": {
+        "model": "gpt-4o-mini",
+        "options": {
+          "temperature": 0.3
+        }
+      },
+      "id": "5927523c-762b-49d9-bc0c-26416f95c11a",
+      "name": "OpenAI Chat Model",
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1,
+      "position": [16, 224],
+      "credentials": {
+        "openAiApi": {
+          "id": "YOUR_OPENAI_CREDENTIAL_ID",
+          "name": "YOUR_OPENAI_CREDENTIAL_NAME"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "id": "a8aa4cf9-7625-4b6f-b6a3-3aede30af7bb",
+      "name": "Embeddings OpenAI",
+      "type": "@n8n/n8n-nodes-langchain.embeddingsOpenAi",
+      "typeVersion": 1,
+      "position": [400, 272],
+      "credentials": {
+        "openAiApi": {
+          "id": "YOUR_OPENAI_CREDENTIAL_ID",
+          "name": "YOUR_OPENAI_CREDENTIAL_NAME"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "mode": "retrieve-as-tool",
+        "toolName": "knowledge_base",
+        "toolDescription": "Search the entire knowledge base for ANY information related to the business.\n\nUse this tool whenever a user asks a question that may require factual information.\n\nAlways search this tool before answering.\n\nReturn the most relevant information from the stored documents.",
+        "tableName": {
+          "__rl": true,
+          "value": "rag_docs",
+          "mode": "list",
+          "cachedResultName": "rag_docs"
+        },
+        "options": {
+          "queryName": "match_documents"
+        }
+      },
+      "id": "2d74d162-3d80-440d-b5e4-82f9a254c04f",
+      "name": "Supabase Vector Store",
+      "type": "@n8n/n8n-nodes-langchain.vectorStoreSupabase",
+      "typeVersion": 1,
+      "position": [528, 144],
+      "credentials": {
+        "supabaseApi": {
+          "id": "YOUR_SUPABASE_CREDENTIAL_ID",
+          "name": "YOUR_SUPABASE_CREDENTIAL_NAME"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sessionKey": "={{ $json.sessionId }}",
+        "contextWindowLength": 10
+      },
+      "id": "a4bb4e2d-e580-4dbc-b14d-4b5f6cf62152",
+      "name": "Window Buffer Memory",
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1,
+      "position": [192, 224]
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chatTrigger",
+      "typeVersion": 1.4,
+      "position": [-352, 32],
+      "id": "df98c3f6-1289-4ea6-b566-db2e9bbea883",
+      "name": "When chat message received",
+      "webhookId": "YOUR_WEBHOOK_ID"
+    }
+  ],
+  "connections": {
+    "AI Agent": {
+      "main": [[]]
+    },
+    "OpenAI Chat Model": {
+      "ai_languageModel": [[{ "node": "AI Agent", "type": "ai_languageModel", "index": 0 }]]
+    },
+    "Embeddings OpenAI": {
+      "ai_embedding": [[{ "node": "Supabase Vector Store", "type": "ai_embedding", "index": 0 }]]
+    },
+    "Supabase Vector Store": {
+      "ai_tool": [[{ "node": "AI Agent", "type": "ai_tool", "index": 0 }]]
+    },
+    "Window Buffer Memory": {
+      "ai_memory": [[{ "node": "AI Agent", "type": "ai_memory", "index": 0 }]]
+    },
+    "When chat message received": {
+      "main": [[{ "node": "AI Agent", "type": "main", "index": 0 }]]
+    }
+  },
+  "pinData": {},
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "YOUR_N8N_INSTANCE_ID"
+  }
+}
