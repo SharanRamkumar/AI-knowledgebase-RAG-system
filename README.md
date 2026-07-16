@@ -130,10 +130,10 @@ n8n-RAG-System
 │     ├── sample_input.json
 │     └── sample_questions.txt
 │
-├── images
-│     ├── workflow.png
-│     ├── architecture.png
-│     └── demo.png
+|___ images
+      ├── workflow.png
+      ├── architecture.png
+      └── demo.png
 ```
 
 ---
