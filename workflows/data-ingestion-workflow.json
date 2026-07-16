@@ -1,1 +1,136 @@
-
+{
+  "nodes": [
+    {
+      "parameters": {
+        "mode": "insert",
+        "tableName": {
+          "__rl": true,
+          "value": "rag_docs",
+          "mode": "list",
+          "cachedResultName": "rag_docs"
+        },
+        "options": {}
+      },
+      "id": "YOUR_NODE_ID_1",
+      "name": "Insert into Supabase Vector Store",
+      "type": "@n8n/n8n-nodes-langchain.vectorStoreSupabase",
+      "typeVersion": 1,
+      "position": [448, 416],
+      "credentials": {
+        "supabaseApi": {
+          "id": "YOUR_SUPABASE_CREDENTIAL_ID",
+          "name": "YOUR_SUPABASE_CREDENTIAL_NAME"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "id": "YOUR_NODE_ID_2",
+      "name": "Embeddings for Ingestion",
+      "type": "@n8n/n8n-nodes-langchain.embeddingsOpenAi",
+      "typeVersion": 1,
+      "position": [448, 608],
+      "credentials": {
+        "openAiApi": {
+          "id": "YOUR_OPENAI_CREDENTIAL_ID",
+          "name": "YOUR_OPENAI_CREDENTIAL_NAME"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "YOUR_WEBHOOK_PATH",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [0, 416],
+      "id": "YOUR_NODE_ID_3",
+      "name": "Webhook",
+      "webhookId": "YOUR_WEBHOOK_ID"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.5,
+      "position": [1120, 416],
+      "id": "YOUR_NODE_ID_4",
+      "name": "Respond to Webhook"
+    },
+    {
+      "parameters": {
+        "jsCode": "const firstItem = $input.first().json;\n\nreturn [\n  {\n    json: {\n      success: true,\n      message: \"Knowledge Base Updated Successfully\",\n      source: firstItem.metadata?.source || \"Unknown\",\n      chunksStored: $input.all().length,\n      timestamp: new Date().toISOString()\n    }\n  }\n];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [832, 416],
+      "id": "YOUR_NODE_ID_5",
+      "name": "Code in JavaScript"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.documentDefaultDataLoader",
+      "typeVersion": 1.1,
+      "position": [624, 624],
+      "id": "YOUR_NODE_ID_6",
+      "name": "Default Data Loader"
+    },
+    {
+      "parameters": {
+        "jsCode": "const body = $input.first().json.body;\n\nconst text = body?.text || \"\";\nconst source = body?.source || \"manual\";\n\nif (!text.trim()) {\n  return [{\n    json: {\n      error: true,\n      message: \"No text provided\"\n    }\n  }];\n}\n\nconst cleanText = text\n  .replace(/\\r\\n/g, \"\\n\")\n  .replace(/\\n{3,}/g, \"\\n\\n\")\n  .trim();\n\nconst words = cleanText.split(/\\s+/);\n\nconst chunkSize = 350;\nconst overlap = 50;\n\nconst results = [];\n\nfor (let i = 0; i < words.length; i += chunkSize - overlap) {\n\n  const chunk = words\n    .slice(i, i + chunkSize)\n    .join(\" \");\n\n  if (chunk.length < 50) continue;\n\n  results.push({\n    json: {\n      text: chunk,\n      source: source\n    }\n  });\n}\n\nreturn results;"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [208, 416],
+      "id": "YOUR_NODE_ID_7",
+      "name": "Code in JavaScript1",
+      "disabled": true
+    }
+  ],
+  "connections": {
+    "Insert into Supabase Vector Store": {
+      "main": [
+        [{ "node": "Code in JavaScript", "type": "main", "index": 0 }]
+      ]
+    },
+    "Embeddings for Ingestion": {
+      "ai_embedding": [
+        [{ "node": "Insert into Supabase Vector Store", "type": "ai_embedding", "index": 0 }]
+      ]
+    },
+    "Webhook": {
+      "main": [
+        [{ "node": "Code in JavaScript1", "type": "main", "index": 0 }]
+      ]
+    },
+    "Code in JavaScript": {
+      "main": [
+        [{ "node": "Respond to Webhook", "type": "main", "index": 0 }]
+      ]
+    },
+    "Default Data Loader": {
+      "ai_document": [
+        [{ "node": "Insert into Supabase Vector Store", "type": "ai_document", "index": 0 }]
+      ]
+    },
+    "Code in JavaScript1": {
+      "main": [
+        [{ "node": "Insert into Supabase Vector Store", "type": "main", "index": 0 }]
+      ]
+    }
+  },
+  "pinData": {},
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "YOUR_INSTANCE_ID"
+  }
+}
+  
