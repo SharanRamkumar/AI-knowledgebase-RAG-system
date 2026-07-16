@@ -1,7 +1,6 @@
-Q- What is Software Engineering?
-
 [
   {
+    "question": " What is software Engineering?"
     "output": "Software Engineering is the systematic application of engineering principles to the design, development, testing, deployment, and maintenance of software systems. \n\nKey components include:\n\n- **Software Development Life Cycle (SDLC)**: This is the process used by software teams to plan, create, test, and deliver software. Common SDLC models include Waterfall, Agile, Scrum, Kanban, and Spiral.\n  \n- **Agile Methodology**: An iterative approach to software development where work is broken into small cycles called sprints (usually lasting two weeks). Key Agile values emphasize individuals over processes, working software over documentation, customer collaboration over contract negotiation, and responding to change over following a plan.\n\n- **Scrum Framework**: A specific framework under Agile that includes key roles such as Product Owner (defines requirements), Scrum Master (removes blockers), and Development Team (builds the product). Important ceremonies in Scrum include Sprint Planning, Daily Standup, Sprint Review, and Sprint Retrospective."
   }
 ]
